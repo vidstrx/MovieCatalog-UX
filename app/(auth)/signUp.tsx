@@ -14,21 +14,18 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [errorMessagePassword, setErrorMessagePassword] = useState<string | null>('');
-  const [errorMessageEmail, setErrorMessageEmail] = useState<string | null>('');
 
   const handleSignUp = async (user: string, password: string) => {
     setErrorMessagePassword(null);
-    setErrorMessageEmail(null);
     if (!email.includes('@') || (!email.includes('.com') && !email.includes('.edu'))) {
-      setErrorMessageEmail('Ingrese un email válido');
-      return Alert.alert('Error', errorMessageEmail || 'Email inválido');
+      return Alert.alert('Error','Ingrese un Email valido ');
     }
 
     try {
       let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/signUp", {user: user, password: password});
       console.log('RESPUESTA COMPLETA DEL BE!!!!!!', response);
       if (response.status === 201) {
-        Alert.alert('Éxito', 'Usuario registrado correctamente', [{
+        Alert.alert('Éxito', response.data.mensaje, [{
           text: 'OK',
           onPress: () => {auth?.login(response.data.responseFirebase.user.email);}
         }]);
@@ -61,5 +58,5 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', backgroundColor: Colors.color.background },
   title: { color:Colors.color.white, fontSize: 24, fontWeight: 'bold', alignSelf: 'center', margin: 5, },
-  error: { color: Colors.color.error, fontSize: 16,}
+  error: { color: Colors.color.error, fontSize: 16, marginLeft: 15,}
 });
