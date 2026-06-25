@@ -35,7 +35,7 @@ export default function LoginScreen() {
       console.log('Error en la respuesta del servidor: ', error);
       let errorMessage = 'Ocurrió un error desconocido';
       if (error.status === 401 || error.status === 404) {
-        errorMessage = error.response.data.mensaje
+        errorMessage = error.response.data.mensaje;
       } else {
         console.error('Error desconocido: ', error);
       }

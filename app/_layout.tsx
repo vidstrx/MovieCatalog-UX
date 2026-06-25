@@ -1,7 +1,6 @@
 import { useEffect, useState, createContext, useContext } from 'react';
 import { Slot, useRouter, useSegments } from 'expo-router';
 
-// 1. Crear el contexto de autenticación
 const AuthContext = createContext<{ user: any; login: (userData: any) => void; logout: () => void } | null>(null);
 
 export function useAuth() {
@@ -10,7 +9,7 @@ export function useAuth() {
 
 export default function RootLayout() {
   const [user, setUser] = useState<any>(null);
-  const [isNavigationReady, setIsNavigationReady] = useState(false); // <--- NUEVO ESTADO
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
   const segments = useSegments();
   const router = useRouter();
 
@@ -24,7 +23,6 @@ export default function RootLayout() {
 
   // Efecto 2: Controla la redirección condicional
   useEffect(() => {
-    // Si la navegación interna de Expo aún no está lista, no hagas nada
     if (!isNavigationReady) return;
 
     const inAuthGroup = segments[0] === '(auth)';
@@ -34,7 +32,7 @@ export default function RootLayout() {
     } else if (user && inAuthGroup) {
       router.replace('/(tabs)');
     }
-  }, [user, segments, isNavigationReady]); // <--- AGREGADA LA VARIABLE AQUÍ
+  }, [user, segments, isNavigationReady]);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
