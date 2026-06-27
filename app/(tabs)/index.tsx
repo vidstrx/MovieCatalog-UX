@@ -1,5 +1,6 @@
 import { Text, Button, StyleSheet, ScrollView } from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import {Input} from '../components/Input';
 import {Colors} from '../theme/theme';
 import {type tnProps} from '../components/Thumbnail';
@@ -8,6 +9,7 @@ import { useAuth } from '../_layout';
 
 export default function HomeScreen() {
   const auth = useAuth();
+  const router = useRouter();
   const data: tnProps[] = [ //thumnail props
     {id: '1', url: 'https://picsum.photos/150'},
     {id: '2', url: 'https://picsum.photos/200'},
@@ -21,7 +23,8 @@ export default function HomeScreen() {
     <SafeAreaProvider style={styles.body}>
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>What do you want to watch?</Text>
-        <Input text='Search'/>
+        <Input text='Search' onFocus={() => router.push('/(tabs)/search')} 
+          showSoftInputOnFocus={false}/>
         <ScrollView>
           <Carousel title='Now Playing' data={data}/>
           <Carousel title='Upcoming' data={data}/>

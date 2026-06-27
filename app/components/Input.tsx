@@ -1,15 +1,16 @@
+import { forwardRef } from 'react';
 import { TextInput, StyleSheet, type TextInputProps } from 'react-native';
 import {Colors} from '../theme/theme'
 
 type inputProps = TextInputProps & {
-    text: string;
+    text: string,
 };
 
-export function Input ({text, ...rest}: inputProps){
+export const Input = forwardRef<TextInput, inputProps>(({text, ...rest}, ref) => {
     return (
-        <TextInput style={styles.input} placeholder={text} placeholderTextColor={Colors.color.disabled} {...rest}/>
+        <TextInput ref={ref} style={styles.input} placeholder={text} placeholderTextColor={Colors.color.disabled} {...rest}/>
     );
-};
+});
 
 const styles = StyleSheet.create({
     input: {
