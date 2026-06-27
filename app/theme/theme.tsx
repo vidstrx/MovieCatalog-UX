@@ -5,7 +5,7 @@ export const Colors = {
         primary: '#15448F',
         white: 'white',
         error: 'red',
-        success: '#2AC659',
+        rating: '#FA8D02',
         disabled: '#A5A5A5',
         warning: '#efd52e',
     },
