@@ -1,98 +1,175 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import YoutubePlayer from 'react-native-youtube-iframe';
 import { TextInfo } from '../components/TextInfo';
+import { Thumbnail } from '../components/Thumbnail';
 import { Colors } from '../theme/theme';
+import { allMovies } from './index';
 
-export default function DetailScreen() {
-  const { detalles } = useLocalSearchParams<{ detalles: string }>();
-  const router = useRouter();
-  const movieMock = {
-    title: `Madame Web (ID: ${detalles})`,
-    backdropUrl: 'https://picsum.photos/400/250',
-    posterUrl: 'https://picsum.photos/150/250',
-    rating: '5.57',
-    year: '2024',
-    runtime: '727',
-    language: 'en',
-    synopsis: 'Forced to confront revelations about her past, paramedic Cassandra Webb forges a relationship with three young women destined for powerful futures... if they can all survive a deadly present.'
-  };
+const { width } = Dimensions.get('window');
+const VIDEO_HEIGHT = 210;
 
-  return (
-    <SafeAreaProvider style={styles.body}>
-      <SafeAreaView style={styles.container}>
-        
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={28} color={Colors.color.white} />
-          </Pressable>
-          <Text style={styles.headerTitle}>Detail</Text>
-          <Ionicons name="heart-outline" size={28} color={Colors.color.white} />
+export default function DetallesScreen() {
+    const router = useRouter();
+    const navigation = useNavigation(); // el controlador de navegación nativa
+    const { detalles } = useLocalSearchParams<{ detalles: string }>();
+    
+    const movie = allMovies.find((m) => m.id === detalles);
+
+    if (!movie) {
+        return null;
+    }
+
+    const getYouTubeId = (url: string) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
+
+    const videoId = getYouTubeId(movie.videoUrl);
+
+    return (
+        <View style={styles.screen}>
+            
+            <View style={styles.videoContainer}>
+                {videoId ? (
+                    <YoutubePlayer
+                        height={VIDEO_HEIGHT}
+                        width={width}
+                        play={true}
+                        videoId={videoId}
+                    />
+                ) : (
+                    <View style={[styles.videoPlaceholder, { height: VIDEO_HEIGHT }]} />
+                )}
+
+                {/*  Cambiado a navigation.goBack() para forzar el retorno a la pantalla previa */}
+                <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Text style={styles.navText}>← Back</Text>
+                </Pressable>
+                <Pressable style={styles.heartButton} onPress={() => { /* Sin función todavía */ }}>
+                    <Text style={styles.heartIcon}>❤️</Text>
+                </Pressable>
+            </View>
+
+            <ScrollView style={styles.scrollBody} showsVerticalScrollIndicator={false}>
+                
+                <View style={styles.titleContainer}>
+                    <Text style={styles.movieTitle} numberOfLines={2} ellipsizeMode="tail">
+                        {movie.title}
+                    </Text>
+                </View>
+
+                <View style={styles.metadataRow}>
+                    <View style={styles.metaItem}><TextInfo text={movie.rating?.toString()} name="star" /></View>
+                    <View style={styles.metaItem}><TextInfo text={movie.year?.toString()} name="calendar-outline" /></View>
+                    <View style={styles.metaItem}><TextInfo text={movie.language} name="information-circle-outline" /></View>
+                </View>
+
+                <View style={styles.synopsisContainer}>
+                    <Text style={styles.synopsisText}>{movie.sinopsis}</Text>
+                </View>
+
+            </ScrollView>
+
+            <View style={styles.posterAbsoluteContainer} pointerEvents="none">
+                <Thumbnail url={movie.imageUrl} />
+            </View>
+
         </View>
-
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.backdropContainer}>
-            <Image source={{ uri: movieMock.backdropUrl }} style={styles.backdrop} />
-            <View style={styles.playButton}>
-              <Ionicons name="play-circle" size={64} color="red" />
-            </View>
-            <View style={styles.ratingBadge}>
-              <Ionicons name="star" size={16} color={Colors.color.rating} />
-              <Text style={styles.ratingText}>{movieMock.rating}</Text>
-            </View>
-          </View>
-          <View style={styles.mainInfoContainer}>
-            <Image source={{ uri: movieMock.posterUrl }} style={styles.poster} />
-            <Text style={styles.movieTitle}>{movieMock.title}</Text>
-          </View>
-
-          <View style={styles.metadataRow}>
-            <TextInfo text={movieMock.year} name="calendar-outline" />
-            <TextInfo text={`${movieMock.runtime} min`} name="information-circle-outline" />
-            <TextInfo text={movieMock.language.toUpperCase()} name="information-circle-outline" />
-          </View>
-
-          <View style={styles.synopsisContainer}>
-            <Text style={styles.synopsisText}>{movieMock.synopsis}</Text>
-          </View>
-        </ScrollView>
-
-      </SafeAreaView>
-    </SafeAreaProvider>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
-  body: { flex: 1, backgroundColor: Colors.color.background },
-  container: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  headerTitle: { fontSize: 20, color: Colors.color.white, fontWeight: 'bold' },
-  backdropContainer: { width: '100%', height: 220, position: 'relative', justifyContent: 'center', alignItems: 'center' },
-  backdrop: { width: '100%', height: '100%', resizeMode: 'cover', opacity: 0.7 },
-  playButton: { position: 'absolute' },
-  ratingBadge: {
-    position: 'absolute',
-    bottom: 10,
-    right: 15,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  ratingText: { color: Colors.color.rating, marginLeft: 5, fontWeight: 'bold' },
-  mainInfoContainer: { flexDirection: 'row', paddingHorizontal: 15, marginTop: -40, alignItems: 'flex-end' },
-  poster: { width: 110, height: 160, borderRadius: 10, borderWidth: 2, borderColor: Colors.color.background },
-  movieTitle: { flex: 1, fontSize: 22, color: Colors.color.white, fontWeight: 'bold', marginLeft: 15, marginBottom: 10 },
-  metadataRow: { flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 10, marginTop: 15 },
-  synopsisContainer: { paddingHorizontal: 20, marginTop: 20 },
-  synopsisText: { color: Colors.color.white, fontSize: 16, lineHeight: 24, textAlign: 'justify' },
+    screen: {
+        flex: 1,
+        backgroundColor: Colors.color.background,
+    },
+    videoContainer: {
+        width: width,
+        height: VIDEO_HEIGHT + 60, 
+        paddingTop: 60, 
+        backgroundColor: '#000',
+        zIndex: 1,
+    },
+    videoPlaceholder: {
+        backgroundColor: '#000',
+        width: '100%',
+    },
+    backButton: {
+        position: "absolute",
+        top: 72, 
+        left: 16,
+        backgroundColor: "rgba(0,0,0,0.6)",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        zIndex: 10,
+    },
+    heartButton: {
+        position: "absolute",
+        top: 72, 
+        right: 16, 
+        backgroundColor: "rgba(0,0,0,0.6)",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        zIndex: 10,
+    },
+    heartIcon: {
+        fontSize: 14,
+    },
+    navText: {
+        color: Colors.color.white,
+        fontSize: 14,
+        fontWeight: "bold",
+    },
+    scrollBody: {
+        flex: 1,
+        zIndex: 5,
+    },
+    titleContainer: {
+        paddingRight: 15,
+        paddingTop: 40,      
+        paddingBottom: 10,
+        marginLeft: 135,   
+        minHeight: 85, 
+    },
+    movieTitle: {
+        fontSize: 22,
+        color: Colors.color.white,
+        fontWeight: 'bold',
+    },
+    posterAbsoluteContainer: {
+        position: 'absolute',
+        top: (VIDEO_HEIGHT + 60) - 100, 
+        left: 15,
+        width: 150,
+        height: 250,
+        zIndex: 99, 
+        transform: [{ scale: 0.65 }],
+        transformOrigin: 'top left', 
+    },
+    metadataRow: {
+        flexDirection: 'row', 
+        alignItems: 'center',
+        paddingHorizontal: 5,
+        marginTop: 15, 
+        marginBottom: 10,
+    },
+    metaItem: {
+        marginRight: -12, 
+    },
+    synopsisContainer: {
+        paddingHorizontal: 15,
+        marginTop: 10,
+        marginBottom: 30,
+    },
+    synopsisText: {
+        fontSize: 15,
+        color: Colors.color.white,
+        lineHeight: 22,
+        opacity: 0.9,
+    },
 });
