@@ -1,5 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import {Ionicons} from '@expo/vector-icons';
 import { Colors } from '../theme/theme';
 
 export default function TabsLayout() {
@@ -16,6 +16,9 @@ export default function TabsLayout() {
         tabBarIcon: ({color, focused}) => (
           <Ionicons name={focused? 'search':'search-outline'} color={color} size={24} />
         )
+      }} />
+      <Tabs.Screen name="[detalles]" options={{ 
+        href: null 
       }} />
     </Tabs>
   );

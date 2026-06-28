@@ -1,11 +1,11 @@
-import { Text, Button, StyleSheet, ScrollView } from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import {Input} from '../components/Input';
-import {Colors} from '../theme/theme';
-import {type tnProps} from '../components/Thumbnail';
-import {Carousel} from '../components/Carousel';
+import { Button, ScrollView, StyleSheet, Text } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
+import { Carousel } from '../components/Carousel';
+import { Input } from '../components/Input';
+import { type tnProps } from '../components/Thumbnail';
+import { Colors } from '../theme/theme';
 
 export default function HomeScreen() {
   const auth = useAuth();
@@ -18,7 +18,12 @@ export default function HomeScreen() {
     {id: '5', url: 'https://picsum.photos/150'},
     {id: '6', url: 'https://picsum.photos/150'},
   ]
-
+  const handleMoviePress = (id: string) => {
+    router.push({
+      pathname: '/(tabs)/[detalles]',
+      params: { detalles: id }
+    });
+  };
   return (
     <SafeAreaProvider style={styles.body}>
       <SafeAreaView style={styles.container}>
@@ -26,9 +31,9 @@ export default function HomeScreen() {
         <Input text='Search' onFocus={() => router.push('/(tabs)/search')} 
           showSoftInputOnFocus={false}/>
         <ScrollView>
-          <Carousel title='Now Playing' data={data}/>
-          <Carousel title='Upcoming' data={data}/>
-          <Carousel title='Top Rated' data={data}/>
+          <Carousel title='Now Playing' data={data} onItemPress={handleMoviePress}/>
+          <Carousel title='Upcoming' data={data} onItemPress={handleMoviePress}/>
+          <Carousel title='Top Rated' data={data} onItemPress={handleMoviePress}/>
         </ScrollView>
         <Button title="Cerrar Sesión" onPress={() => auth?.logout()} />
       </SafeAreaView>
