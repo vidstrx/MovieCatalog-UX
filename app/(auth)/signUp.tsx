@@ -17,26 +17,31 @@ export default function SignUpScreen() {
 
   const handleSignUp = async (user: string, password: string) => {
     setErrorMessagePassword(null);
-    if (!email.includes('@') || (!email.includes('.com') && !email.includes('.edu'))) {
+    if (!email.includes('@')) {
       return Alert.alert('Error','Ingrese un Email valido ');
     }
 
     try {
-      let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/signUp", {user: user, password: password});
-      console.log('RESPUESTA COMPLETA DEL BE!!!!!!', response);
+      let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/signUp", {email: user, password: password});
+      //console.log('RESPUESTA COMPLETA DEL BE!!!!!!', response);
       if (response.status === 201) {
         Alert.alert('Éxito', response.data.mensaje, [{
           text: 'OK',
-          onPress: () => {auth?.login(response.data.responseFirebase.user.email);}
+          onPress: () => {auth?.login(response.data.userId);}
         }]);
-        console.log('Usuario registrado: ', response.data.responseFirebase.user.email);
+        console.log('Usuario registrado: ', response.data.userId);
       }
     } catch (error: any) {
-      console.error('Error en la respuesta del servidor: ', error.response.data);
-      console.error('Algo salio mal ', error);
-      if (error.response.data.mensaje) {
-        setErrorMessagePassword(error.response.data.mensaje);
+      // console.error('Error en la respuesta del servidor: ', error.response.data);
+      // console.error('Algo salio mal ', error);
+      console.log('Error en la respuesta del servidor: ', error);
+      let errorMessage = 'Ocurrió un error desconocido';
+      if (error.status === 400) {
+        errorMessage = error.response.data.mensaje;
+      } else {
+        console.error('Error desconocido: ', error);
       }
+      Alert.alert('Error', errorMessage);
     }
   };
   return (

@@ -23,18 +23,18 @@ export default function LoginScreen() {
     }
 
     try {
-      let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/logIn", {user: user, password: password});
+      let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/logIn", {email: user, password: password});
       if(response.status === 200) {
         Alert.alert('Exito', response.data.mensaje, [{
           text: 'OK',
-          onPress: () => {auth?.login(response.data.responseFirebase.user.email);}
+          onPress: () => {auth?.login(response.data.userId);}
         }]);
-        console.log('Usuario logueado: ', response.data.responseFirebase.user.email);
+        console.log('Usuario logueado: ', response.data.userId);
       }
     } catch (error: any) {
       console.log('Error en la respuesta del servidor: ', error);
       let errorMessage = 'Ocurrió un error desconocido';
-      if (error.status === 401 || error.status === 404) {
+      if (error.status === 401 || error.status === 400) {
         errorMessage = error.response.data.mensaje;
       } else {
         console.error('Error desconocido: ', error);
