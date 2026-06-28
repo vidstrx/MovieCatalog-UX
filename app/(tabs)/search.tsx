@@ -1,5 +1,5 @@
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { FlatList, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
@@ -22,11 +22,20 @@ export default function HomeScreen() {
     }, [])
   );
 
+  const [texto, setTexto] = useState('');
+  const searchMovies = useMemo(()=>{
+    if (texto.length <= 0)
+      return allMovies;
+    else
+      return allMovies.filter((pelicula)=> pelicula.title.toUpperCase().includes(texto.toUpperCase()));
+  }, [texto]);
+  
+
   return (
     <SafeAreaProvider style={styles.body}>
       <SafeAreaView style={styles.container}>
-        <Input ref={inputRef} text='Search'/>
-        <FlatList data={allMovies}
+        <Input ref={inputRef} text='Search' onChangeText={(texto)=>setTexto(texto)}/>
+        <FlatList data={searchMovies}
           renderItem={({item}) => (
             <Card 
               id={item.id} 

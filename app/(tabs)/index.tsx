@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
@@ -7,7 +8,6 @@ import { Carousel } from '../components/Carousel';
 import { Input } from '../components/Input';
 import { type tnProps } from '../components/Thumbnail';
 import { Colors } from '../theme/theme';
-import axios from 'axios';
 
 function getData(array:[]) {
   const data: tnProps[] = array.map((movie) => ({
@@ -77,7 +77,7 @@ export default function HomeScreen() {
           <Carousel title='Upcoming' data={upComingData} onItemPress={handleMoviePress}/>
           <Carousel title='Top Rated' data={topRatedData} onItemPress={handleMoviePress}/>
         </ScrollView>
-        <Button title="Cerrar Sesión" onPress={() => auth?.logout()} />
+        <Button title="Cerrar SesiÃ³n" onPress={() => auth?.logout()} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
