@@ -1,4 +1,5 @@
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter, useSegments } from 'expo-router';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { TextInfo } from '../components/TextInfo';
@@ -10,8 +11,8 @@ const { width } = Dimensions.get('window');
 const VIDEO_HEIGHT = 210;
 
 export default function DetallesScreen() {
-    const router = useRouter();
-    const navigation = useNavigation(); // el controlador de navegación nativa
+    const router = useRouter(); 
+    const segments = useSegments(); 
     const { detalles } = useLocalSearchParams<{ detalles: string }>();
     
     const movie = allMovies.find((m) => m.id === detalles);
@@ -29,6 +30,20 @@ export default function DetallesScreen() {
 
     const videoId = getYouTubeId(movie.videoUrl);
 
+    const handleBack = () => {
+        const rutaActiva = segments as string[]; 
+
+        if (rutaActiva.includes('search')) {
+            router.navigate('/(tabs)/search');
+        } else {
+            if (router.canGoBack()) {
+                router.back();
+            } else {
+                router.navigate('/(tabs)'); 
+            }
+        }
+    };
+
     return (
         <View style={styles.screen}>
             
@@ -44,12 +59,11 @@ export default function DetallesScreen() {
                     <View style={[styles.videoPlaceholder, { height: VIDEO_HEIGHT }]} />
                 )}
 
-                {/*  Cambiado a navigation.goBack() para forzar el retorno a la pantalla previa */}
-                <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
+                <Pressable style={styles.backButton} onPress={handleBack}>
                     <Text style={styles.navText}>← Back</Text>
                 </Pressable>
                 <Pressable style={styles.heartButton} onPress={() => { /* Sin función todavía */ }}>
-                    <Text style={styles.heartIcon}>❤️</Text>
+                    <Ionicons name="heart" size={18} color={Colors.color.white} />
                 </Pressable>
             </View>
 
@@ -116,9 +130,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 6,
         zIndex: 10,
-    },
-    heartIcon: {
-        fontSize: 14,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     navText: {
         color: Colors.color.white,
@@ -133,7 +146,7 @@ const styles = StyleSheet.create({
         paddingRight: 15,
         paddingTop: 40,      
         paddingBottom: 10,
-        marginLeft: 135,   
+        marginLeft: 135,     
         minHeight: 85, 
     },
     movieTitle: {
