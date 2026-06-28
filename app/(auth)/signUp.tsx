@@ -1,12 +1,13 @@
-import { Text, StyleSheet, Alert } from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../_layout';
-import { Button } from '../components/Button'
-import {Colors} from '../theme/theme'
-import { Input } from '../components/Input'
-import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert, Pressable, StyleSheet, Text } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../_layout';
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
+import { Colors } from '../theme/theme';
 
 export default function SignUpScreen() {
   const auth = useAuth();
@@ -14,6 +15,7 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [errorMessagePassword, setErrorMessagePassword] = useState<string | null>('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async (user: string, password: string) => {
     setErrorMessagePassword(null);
@@ -49,7 +51,15 @@ export default function SignUpScreen() {
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Sign Up to Movies</Text>
         <Input text='Email' value={email} onChangeText={(emailInput) => setEmail(emailInput)}/>
-        <Input text='Password' secureTextEntry={true} value={password} onChangeText={(passwordInput) => {
+        <Input 
+          text='Password' 
+          secureTextEntry={!showPassword} 
+          value={password} 
+          icono={
+            <Pressable onPress={()=>{setShowPassword(!showPassword)}}>
+                <Ionicons name={showPassword? 'eye' : 'eye-off'} style={styles.icono} size={26}/>
+            </Pressable>}
+          onChangeText={(passwordInput) => {
           passwordInput.length < 6 ? setErrorMessagePassword('La contraseña debe tener al menos 6 caracteres'): setErrorMessagePassword(null);
           setPassword(passwordInput)}}/>
         {errorMessagePassword && <Text style={styles.error}>{errorMessagePassword}</Text>}
@@ -63,5 +73,6 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', backgroundColor: Colors.color.background },
   title: { color:Colors.color.white, fontSize: 24, fontWeight: 'bold', alignSelf: 'center', margin: 5, },
-  error: { color: Colors.color.error, fontSize: 16, marginLeft: 15,}
+  error: { color: Colors.color.error, fontSize: 16, marginLeft: 15,},
+  icono: { color: Colors.color.white, paddingRight: 10 }
 });

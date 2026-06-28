@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import { Text, StyleSheet, Alert } from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert, Pressable, StyleSheet, Text } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
-import { Button } from '../components/Button'
-import {Colors} from '../theme/theme'
-import { Input } from '../components/Input'
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
+import { Colors } from '../theme/theme';
 
 export default function LoginScreen() {
   const auth = useAuth();
@@ -14,6 +15,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [errorMessageEmail, setErrorMessageEmail] = useState<string | null>('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (user: string, password: string) => {
     setErrorMessageEmail(null);
@@ -48,7 +50,16 @@ export default function LoginScreen() {
         <Text style={styles.title}>Login to Movies</Text>
         <Input text='Email' value={email} onChangeText={(emailInput) => setEmail(emailInput)}/>
         {errorMessageEmail && <Text style={styles.error}>{errorMessageEmail}</Text>}
-        <Input text='Password' secureTextEntry={true} value={password} onChangeText={(passwordInput) => setPassword(passwordInput)}/>
+        <Input 
+          text='Password' 
+          secureTextEntry={!showPassword} 
+          value={password} 
+          onChangeText={(passwordInput) => setPassword(passwordInput)} 
+          icono={
+            <Pressable onPress={()=>{setShowPassword(!showPassword)}}>
+                <Ionicons name={showPassword? 'eye' : 'eye-off'} style={styles.icono} size={26}/>
+            </Pressable>
+          }/>
         <Button text="Log In" disabled={!password||!email? true: false} onClick={() => {handleLogin(email,password)}} />
         <Button text="Sign Up" onClick={() => router.push('/(auth)/signUp')} />
       </SafeAreaView>
@@ -59,5 +70,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', backgroundColor: Colors.color.background },
   title: { color:Colors.color.white, fontSize: 24, fontWeight: 'bold', alignSelf: 'center' },
-  error: { color: Colors.color.error, fontSize: 16, marginLeft: 15,}
+  error: { color: Colors.color.error, fontSize: 16, marginLeft: 15,},
+  icono: { color: Colors.color.white, paddingRight: 10 }
 });
