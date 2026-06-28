@@ -24,7 +24,7 @@ export default function LoginScreen() {
 
     try {
       let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/logIn", {user: user, password: password});
-      if(response.status === 201) {
+      if(response.status === 200) {
         Alert.alert('Exito', response.data.mensaje, [{
           text: 'OK',
           onPress: () => {auth?.login(response.data.responseFirebase.user.email);}
