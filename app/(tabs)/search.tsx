@@ -6,20 +6,12 @@ import { useAuth } from '../_layout';
 import { Card } from '../components/Card';
 import { Input } from '../components/Input';
 import { Colors } from '../theme/theme';
+import { allMovies } from './index';
 
 export default function HomeScreen() {
   const auth = useAuth();
   const router = useRouter(); 
   
-  const data = [
-    {id: '1', title:'title1', rating: '8.5', language: 'En', year: '2023', url: 'https://picsum.photos/150'},
-    {id: '2', title:'title2', rating: '8.9', language: 'En', year: '2024', url: 'https://picsum.photos/200'},
-    {id: '3', title:'title3', rating: '9.5', language: 'En', year: '2025', url: 'https://picsum.photos/300'},
-    {id: '4', title:'title4', rating: '7.6', language: 'En', year: '2026', url: 'https://picsum.photos/150'},
-    {id: '5', title:'title5', rating: '8.5', language: 'En', year: '2024', url: 'https://picsum.photos/150'},
-    {id: '6', title:'title6', rating: '6.7', language: 'En', year: '2023', url: 'https://picsum.photos/150'},
-  ];
-
   const inputRef = useRef<TextInput>(null);
   useFocusEffect(
     useCallback(() => {
@@ -34,14 +26,14 @@ export default function HomeScreen() {
     <SafeAreaProvider style={styles.body}>
       <SafeAreaView style={styles.container}>
         <Input ref={inputRef} text='Search'/>
-        <FlatList data={data}
+        <FlatList data={allMovies}
           renderItem={({item}) => (
             <Card 
               id={item.id} 
               title={item.title} 
               rating={item.rating} 
               language={item.language} 
-              url={item.url} 
+              url={item.imageUrl} 
               year={item.year} 
               onClick={() => router.push({
                 pathname: '/(tabs)/[detalles]',

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Button, ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
@@ -6,24 +7,65 @@ import { Carousel } from '../components/Carousel';
 import { Input } from '../components/Input';
 import { type tnProps } from '../components/Thumbnail';
 import { Colors } from '../theme/theme';
+import axios from 'axios';
+
+function getData(array:[]) {
+  const data: tnProps[] = array.map((movie) => ({
+    id: movie.id.toString(), url: movie.bannerVertical
+  }));
+  return data;
+}
+
+export let allMovies:any[] = [];
 
 export default function HomeScreen() {
   const auth = useAuth();
   const router = useRouter();
-  const data: tnProps[] = [ //thumnail props
-    {id: '1', url: 'https://picsum.photos/150'},
-    {id: '2', url: 'https://picsum.photos/200'},
-    {id: '3', url: 'https://picsum.photos/300'},
-    {id: '4', url: 'https://picsum.photos/150'},
-    {id: '5', url: 'https://picsum.photos/150'},
-    {id: '6', url: 'https://picsum.photos/150'},
-  ]
+  const [nowPlaying, setNowPlaying] = useState<[]>([]);
+  const [upComing, setUpComing] = useState<[]>([]);
+  const [topRated, setTopRated] = useState<[]>([]);
+
   const handleMoviePress = (id: string) => {
     router.push({
       pathname: '/(tabs)/[detalles]',
       params: { detalles: id }
     });
   };
+
+  const getMovies = async () => {
+    try {
+      let response = await axios.get(process.env.EXPO_PUBLIC_API_URL + "/peliculas/home");
+      if(response.status === 200) {
+        setNowPlaying(response.data.nowPlaying);
+        setUpComing(response.data.upcoming);
+        setTopRated(response.data.topRated);
+        console.log('Datos extraidos');
+      }
+    } catch (error: any) {
+      console.log('Error en la respuesta del servidor: ', error);
+    }
+  }
+  
+  const nowPlayingData = getData(nowPlaying);
+  const upComingData = getData(upComing);
+  const topRatedData = getData(topRated);
+  allMovies = [...nowPlaying, ...upComing, ...topRated].map((movie) => ({
+    id: movie.id.toString(),
+    title: movie.titulo,
+    imageUrl: movie.bannerVertical,
+    rating: movie.rating,
+    language: movie.idioma,
+    year: movie.releaseYear,
+    sinopsis: movie.sinopsis,
+    videoUrl: movie.trailerYoutube
+  })).filter((movie, index, self) => 
+    self.findIndex((m) => m.id === movie.id) === index
+  );
+
+  useEffect(() => {
+    getMovies();
+  },[]);
+
   return (
     <SafeAreaProvider style={styles.body}>
       <SafeAreaView style={styles.container}>
@@ -31,9 +73,9 @@ export default function HomeScreen() {
         <Input text='Search' onFocus={() => router.push('/(tabs)/search')} 
           showSoftInputOnFocus={false}/>
         <ScrollView>
-          <Carousel title='Now Playing' data={data} onItemPress={handleMoviePress}/>
-          <Carousel title='Upcoming' data={data} onItemPress={handleMoviePress}/>
-          <Carousel title='Top Rated' data={data} onItemPress={handleMoviePress}/>
+          <Carousel title='Now Playing' data={nowPlayingData} onItemPress={handleMoviePress}/>
+          <Carousel title='Upcoming' data={upComingData} onItemPress={handleMoviePress}/>
+          <Carousel title='Top Rated' data={topRatedData} onItemPress={handleMoviePress}/>
         </ScrollView>
         <Button title="Cerrar Sesión" onPress={() => auth?.logout()} />
       </SafeAreaView>

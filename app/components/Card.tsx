@@ -2,6 +2,7 @@ import { Text, StyleSheet, View, Pressable} from "react-native";
 import {Thumbnail} from './Thumbnail';
 import {TextInfo} from './TextInfo';
 import { Colors } from '../theme/theme';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 type cardProps = {
     id?: string | undefined,
@@ -17,18 +18,18 @@ export function Card({id, title, rating, language, year, url, onClick}: cardProp
     return (
         <Pressable id={id} style={styles.container} onPress={onClick}>
             <Thumbnail url={url} onClick={onClick}/>
-            <View style={styles.info}>
-                <Text style={styles.title}>{title}</Text>
-                <TextInfo text={rating} name="star"/>
-                <TextInfo text={language} name="information-circle-outline"/>
-                <TextInfo text={year} name="calendar-outline"/>
-            </View>
+                <SafeAreaProvider style={styles.info}>
+                    <Text style={styles.title} numberOfLines={3} ellipsizeMode="tail">{title}</Text>
+                    <TextInfo text={rating} name="star"/>
+                    <TextInfo text={language} name="information-circle-outline"/>
+                    <TextInfo text={year} name="calendar-outline"/>
+                </SafeAreaProvider>
         </Pressable>
     );
 };
 
 const styles = StyleSheet.create({
     container: {flexDirection: 'row', marginHorizontal: 10},
-    info: {marginHorizontal:10,},
+    info: {flex: 1, marginHorizontal:10,},
     title: {fontSize:22, color: Colors.color.white, fontWeight:'bold', paddingTop: 5},
 })
