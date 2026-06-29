@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
-import { useLocalSearchParams, useRouter, useSegments } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { appState, favoriteMovies } from '../(auth)/logIn';
@@ -45,13 +45,11 @@ function añadirEliminarFavorita(movieId:Number){
 
 export default function DetallesScreen() {
     const router = useRouter(); 
-    const segments = useSegments(); 
-    const { detalles } = useLocalSearchParams<{ detalles: string }>();
     const [añadidoFavoritos, setAñadidoFavoritos] = useState(false);
+    const { detalles, from } = useLocalSearchParams<{ detalles: string; from?: string }>();
     useEffect(()=>{
         setAñadidoFavoritos(favoriteMovies.some(pelicula => pelicula === Number(movie.id)));
     },[favoriteMovies]);
-
     const movie = allMovies.find((m) => m.id === detalles);
 
     if (!movie) {
@@ -68,16 +66,12 @@ export default function DetallesScreen() {
     const videoId = getYouTubeId(movie.videoUrl);
 
     const handleBack = () => {
-        const rutaActiva = segments as string[]; 
-
-        if (rutaActiva.includes('search')) {
-            router.navigate('/(tabs)/search');
+        if (from === 'search') {
+            return router.replace('/(tabs)/search');
+        } else if (from === 'watchList') {
+            return router.replace('/(tabs)/watchList');
         } else {
-            if (router.canGoBack()) {
-                router.back();
-            } else {
-                router.navigate('/(tabs)'); 
-            }
+            return router.replace('/(tabs)');
         }
     };
 
@@ -96,7 +90,7 @@ export default function DetallesScreen() {
                     <View style={[styles.videoPlaceholder, { height: VIDEO_HEIGHT }]} />
                 )}
 
-                <Pressable style={styles.backButton} onPress={handleBack}>
+                <Pressable style={styles.backButton} onPress={() => handleBack()}>
                     <Text style={styles.navText}>← Back</Text>
                 </Pressable>
                 <Pressable style={styles.heartButton} onPress={() => { setAñadidoFavoritos(prev=>!prev), añadirEliminarFavorita(Number(movie.id))}}>

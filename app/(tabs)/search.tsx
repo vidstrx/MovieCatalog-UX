@@ -46,7 +46,7 @@ export default function HomeScreen() {
               year={item.year} 
               onClick={() => router.push({
                 pathname: '/(tabs)/[detalles]',
-                params: { detalles: item.id }
+                params: { detalles: item.id, from: 'search' }
               })}
             />
           )}

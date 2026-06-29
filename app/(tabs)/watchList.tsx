@@ -34,7 +34,7 @@ export default function WatchListScreen() {
                     year={item.year} 
                     onClick={() => router.push({
                       pathname: '/(tabs)/[detalles]',
-                      params: { detalles: item.id }
+                      params: { detalles: item.id, from: 'watchList' }
                     })}
                   />
                 )}
@@ -46,9 +46,11 @@ export default function WatchListScreen() {
     );
   }else{
     return(
-      <SafeAreaProvider style={styles.bodyNotFound}>
-        <Image size={20} style={styles.notFound} source={require('../../assets/images/no-content.png')} />
-        <Text style={styles.text}>No Movies Added...</Text>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.bodyNotFound}>
+          <Image style={styles.notFound} source={require('../../assets/images/no-content.png')} />
+          <Text style={styles.text}>No Movies Added...</Text>
+        </SafeAreaView>
       </SafeAreaProvider>
     );
   }
@@ -57,7 +59,7 @@ export default function WatchListScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, marginTop: 30, },
   body: { backgroundColor: Colors.color.background,},
-  notFound:{ filter: 'invert(100%)', width: 200, height: 200, marginLeft:"39%"},
-  bodyNotFound: { backgroundColor: Colors.color.background, justifyContent:'center', flexDirection:'column'},
-  text: {color: Colors.color.white, fontSize:20, marginTop:"1%", marginLeft:"39%"}
+  notFound:{ filter: 'invert(100%)', width: 200, height: 200,},
+  bodyNotFound: { flex: 1, backgroundColor: Colors.color.background, justifyContent:'center', alignItems:'center'},
+  text: {color: Colors.color.white, fontSize:20, marginTop:"1%"}
 });
