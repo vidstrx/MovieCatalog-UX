@@ -9,6 +9,21 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Colors } from '../theme/theme';
 
+//export let favoriteMovies:any[] = [];
+export const appState = {favoriteMovies: [] as Number[]};
+export let favoriteMovies:any[] = [];
+
+const addFavorites = async (user: string) =>{
+    try{
+        const repuestaGet = await axios.get(process.env.EXPO_PUBLIC_API_URL + `/peliculas/favorites/${user}`);
+        const arrayMovies:any[] = repuestaGet.data;
+        appState.favoriteMovies = arrayMovies.map(movie => movie.id);
+    }catch(error){
+        console.log(error);
+    }
+    favoriteMovies = appState.favoriteMovies;
+}
+
 export default function LoginScreen() {
   const auth = useAuth();
   const router = useRouter();
@@ -31,6 +46,7 @@ export default function LoginScreen() {
           text: 'OK',
           onPress: () => {auth?.login(response.data.userId);}
         }]);
+        addFavorites(response.data.userId);
         console.log('Usuario logueado: ', response.data.userId);
       }
     } catch (error: any) {

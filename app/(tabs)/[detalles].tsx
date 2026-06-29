@@ -1,7 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 import { useLocalSearchParams, useRouter, useSegments } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
+import { appState, favoriteMovies } from '../(auth)/logIn';
+import { userId } from '../_layout';
 import { TextInfo } from '../components/TextInfo';
 import { Thumbnail } from '../components/Thumbnail';
 import { Colors } from '../theme/theme';
@@ -10,17 +14,50 @@ import { allMovies } from './index';
 const { width } = Dimensions.get('window');
 const VIDEO_HEIGHT = 210;
 
+const addFavoriteMovie = async(user_id:string, movieIdArray:string[])=>{
+    try{
+        const response = await axios.post(process.env.EXPO_PUBLIC_API_URL + '/peliculas/addFavorites', {userId: user_id, movieIds:movieIdArray});
+    }catch(error){
+        console.log(error);
+    };
+}
+const deleteFavoriteMovie = async(user_id:string, movieIdArray:string[])=>{
+    try{
+        const response = await axios.delete(process.env.EXPO_PUBLIC_API_URL + '/peliculas/removeFavorites', { data: {userId: user_id, movieIds:movieIdArray}});
+    }catch(error){
+        console.log(error);
+    };
+};
+
+function añadirEliminarFavorita(movieId:Number){
+    const temp = [movieId+""];
+    if(favoriteMovies.includes(movieId) && favoriteMovies.length > 0){
+        const indice = favoriteMovies.indexOf(movieId);
+        favoriteMovies.splice(indice, 1);
+        appState.favoriteMovies.splice(indice, 1);
+        deleteFavoriteMovie(userId, temp);
+    }else{
+        favoriteMovies.push(movieId);
+        appState.favoriteMovies.push(movieId);
+        addFavoriteMovie(userId, temp);
+    }
+}
+
 export default function DetallesScreen() {
     const router = useRouter(); 
     const segments = useSegments(); 
     const { detalles } = useLocalSearchParams<{ detalles: string }>();
-    
+    const [añadidoFavoritos, setAñadidoFavoritos] = useState(false);
+    useEffect(()=>{
+        setAñadidoFavoritos(favoriteMovies.some(pelicula => pelicula === Number(movie.id)));
+    },[favoriteMovies]);
+
     const movie = allMovies.find((m) => m.id === detalles);
 
     if (!movie) {
         return null;
     }
-
+    
     const getYouTubeId = (url: string) => {
         if (!url) return null;
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -62,8 +99,8 @@ export default function DetallesScreen() {
                 <Pressable style={styles.backButton} onPress={handleBack}>
                     <Text style={styles.navText}>← Back</Text>
                 </Pressable>
-                <Pressable style={styles.heartButton} onPress={() => { /* Sin función todavía */ }}>
-                    <Ionicons name="heart" size={18} color={Colors.color.white} />
+                <Pressable style={styles.heartButton} onPress={() => { setAñadidoFavoritos(prev=>!prev), añadirEliminarFavorita(Number(movie.id))}}>
+                    <Ionicons name={favoriteMovies.includes(Number(movie.id))? "heart" : "heart-outline"} size={18} color={Colors.color.white} />
                 </Pressable>
             </View>
 

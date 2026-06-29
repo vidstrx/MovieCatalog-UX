@@ -1,11 +1,12 @@
-import { useEffect, useState, createContext, useContext } from 'react';
 import { Slot, useRouter, useSegments } from 'expo-router';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext<{ user: any; login: (userData: any) => void; logout: () => void } | null>(null);
 
 export function useAuth() {
   return useContext(AuthContext);
 }
+export let userId: string;
 
 export default function RootLayout() {
   const [user, setUser] = useState<any>(null);
@@ -21,6 +22,7 @@ export default function RootLayout() {
     setIsNavigationReady(true);
   }, []);
 
+  userId = user;
   // Efecto 2: Controla la redirección condicional
   useEffect(() => {
     if (!isNavigationReady) return;
