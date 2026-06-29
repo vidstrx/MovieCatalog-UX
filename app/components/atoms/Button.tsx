@@ -1,5 +1,5 @@
 import { Text, StyleSheet, Pressable, type PressableProps } from 'react-native';
-import {Colors} from '../theme/theme'
+import {Colors} from '../../theme/theme';
 
 type btnProps = PressableProps & {
     text: string;

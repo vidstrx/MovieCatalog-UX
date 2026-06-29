@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
+import { Button } from '../components/atoms/Button';
+import { Input } from '../components/atoms/Input';
 import { Colors } from '../theme/theme';
 
 //export let favoriteMovies:any[] = [];

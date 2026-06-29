@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
-import { Colors } from '../theme/theme';
+import { Colors } from '../../theme/theme';
 
 type inputProps = TextInputProps & {
     text: string,

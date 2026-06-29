@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { appState } from '../(auth)/logIn';
-import { Card } from '../components/Card';
+import { Card } from '../components/organisms/Card';
 import { Colors } from '../theme/theme';
 import { allMovies } from './index';
 

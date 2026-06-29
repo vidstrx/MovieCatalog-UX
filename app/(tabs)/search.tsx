@@ -3,8 +3,8 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { FlatList, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
-import { Card } from '../components/Card';
-import { Input } from '../components/Input';
+import { Card } from '../components/organisms/Card';
+import { Input } from '../components/atoms/Input';
 import { Colors } from '../theme/theme';
 import { allMovies } from './index';
 

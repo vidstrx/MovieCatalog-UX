@@ -1,5 +1,5 @@
 import { Text, StyleSheet, View } from "react-native";
-import { Colors } from '../theme/theme';
+import { Colors } from '../../theme/theme';
 import { Ionicons } from '@expo/vector-icons';
 
 type textInfoProps = {

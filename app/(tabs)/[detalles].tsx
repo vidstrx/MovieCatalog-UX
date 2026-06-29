@@ -6,8 +6,8 @@ import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react
 import YoutubePlayer from 'react-native-youtube-iframe';
 import { appState, favoriteMovies } from '../(auth)/logIn';
 import { userId } from '../_layout';
-import { TextInfo } from '../components/TextInfo';
-import { Thumbnail } from '../components/Thumbnail';
+import { TextInfo } from '../components/atoms/TextInfo';
+import { Thumbnail } from '../components/molecules/Thumbnail';
 import { Colors } from '../theme/theme';
 import { allMovies } from './index';
 

@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { Colors } from '../theme/theme';
-import { Thumbnail, type tnProps } from './Thumbnail';
+import { Colors } from '../../theme/theme';
+import { Thumbnail, type tnProps } from '../molecules/Thumbnail';
 
 type carouselProps = {
     title?: string | undefined,

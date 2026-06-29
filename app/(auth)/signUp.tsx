@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
+import { Button } from '../components/atoms/Button';
+import { Input } from '../components/atoms/Input';
 import { Colors } from '../theme/theme';
+import { appState } from './logIn';
 
 export default function SignUpScreen() {
   const auth = useAuth();
@@ -22,7 +23,6 @@ export default function SignUpScreen() {
     if (!email.includes('@')) {
       return Alert.alert('Error','Ingrese un Email valido ');
     }
-
     try {
       let response = await axios.post(process.env.EXPO_PUBLIC_API_URL + "/signUp", {email: user, password: password});
       //console.log('RESPUESTA COMPLETA DEL BE!!!!!!', response);
@@ -32,6 +32,7 @@ export default function SignUpScreen() {
           onPress: () => {auth?.login(response.data.userId);}
         }]);
         console.log('Usuario registrado: ', response.data.userId);
+        appState.favoriteMovies.length = 0;
       }
     } catch (error: any) {
       // console.error('Error en la respuesta del servidor: ', error.response.data);

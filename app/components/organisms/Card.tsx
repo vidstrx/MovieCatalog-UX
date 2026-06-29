@@ -1,7 +1,7 @@
 import { Text, StyleSheet, View, Pressable} from "react-native";
-import {Thumbnail} from './Thumbnail';
-import {TextInfo} from './TextInfo';
-import { Colors } from '../theme/theme';
+import {Thumbnail} from '../molecules/Thumbnail';
+import {TextInfo} from '../atoms/TextInfo';
+import { Colors } from '../../theme/theme';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 type cardProps = {

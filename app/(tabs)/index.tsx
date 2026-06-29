@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../_layout';
-import { Carousel } from '../components/Carousel';
-import { Input } from '../components/Input';
-import { type tnProps } from '../components/Thumbnail';
-import { Button } from '../components/Button';
+import { Carousel } from '../components/organisms/Carousel';
+import { Input } from '../components/atoms/Input';
+import { type tnProps } from '../components/molecules/Thumbnail';
+import { Button } from '../components/atoms/Button';
 import { Colors } from '../theme/theme';
 
 function getData(array:[]) {
