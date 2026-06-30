@@ -1,3 +1,7 @@
+# NOTA: se necesita agregar las variables de entorno para el funcionamiento correcto de este proyecto.
+```env
+EXPO_PUBLIC_API_URL=
+```
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
